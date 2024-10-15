@@ -1,24 +1,11 @@
 
 import viteLogo from '/public/logoBatoi.png';
-import { 
-  getBookById, 
-  getBookIndexById, 
-  bookExists, 
-  booksFromUser, 
-  booksFromModule, 
-  booksCheeperThan, 
-  booksWithStatus, 
-  averagePriceOfBooks, 
-  booksOfTypeNotes, 
-  booksNotSold, 
-  incrementPriceOfbooks, 
-  getUserById, 
-  getUserIndexById, 
-  getUserByNickName, 
-  getModuleByCode 
-} from '/srv/funciones.js';
+import data from './src/services/datos';
+import Modules from './src/model/modules.class';
+import Users from './src/model/users.class';
+import Books from './src/model/books.class';
 
-import { libros } from '/srv/services/datos.js';
+
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -33,15 +20,15 @@ document.querySelector('#app').innerHTML = `
   </div>
 `
 
-const librosUsuario4 = booksFromUser(libros, 4);
-console.log("Libros del usuario 4:");
-console.log(librosUsuario4);
+const myModules = new Modules();
+myModules.populate(data.modules);
 
-const librosModulo5021 = booksFromModule(libros, 5021);
-const librosModulo5021Good = booksWithStatus(librosModulo5021, 'Good');
-console.log("Libros del módulo 5021 en buen estado:");
-console.log(librosModulo5021Good);
+const myUsers = new Users();
+myUsers.populate(data.users);
 
-const librosPrecioIncrementado = incrementPriceOfbooks(libros, 10);
-console.log("Libros con precio incrementado en un 10%:");
-console.log(librosPrecioIncrementado);
+const myBooks = new Books();
+myBooks.populate(data.books);
+
+console.log(myBooks.booksFromModule('5021'));
+console.log(myBooks.booksWithStatus('new'));
+console.log(myBooks.incrementPriceOfbooks(0.1));
