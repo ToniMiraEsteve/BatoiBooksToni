@@ -6,7 +6,6 @@ import Users from './src/model/users.class';
 import Books from './src/model/books.class';
 
 
-
 document.querySelector('#app').innerHTML = `
   <div>
     <a href="https://vitejs.dev" target="_blank">
