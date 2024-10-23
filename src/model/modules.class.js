@@ -1,11 +1,18 @@
-import Module from "./module.class";
+import Module from "./module.class.js";
+import api_modules from "../services/modules.api.js"
+
 export default class modules {
     constructor(){
         this.data = []
     }
 
-    populate(Datos){
-        this.data = Datos.map(dato =>new Module(dato.code,dato.cliteral,dato.vliteral,dato.courseId));
+    async populate() {
+        try {
+            const api = await api_modules.getDBModules();
+            this.data = api.map(module => new Module(module.code, module.cliteral, module.vliteral, module.courseId));
+        } catch (error) {
+            console.error("Error: Dato no encontrado", error);
+        }
     }
 
     getModuleByCode( moduleCode) {

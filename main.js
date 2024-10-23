@@ -1,6 +1,5 @@
 
 import viteLogo from '/public/logoBatoi.png';
-import data from './src/services/datos';
 import Modules from './src/model/modules.class';
 import Users from './src/model/users.class';
 import Books from './src/model/books.class';
@@ -19,15 +18,20 @@ document.querySelector('#app').innerHTML = `
   </div>
 `
 
-const myModules = new Modules();
-myModules.populate(data.modules);
-
-const myUsers = new Users();
-myUsers.populate(data.users);
-
 const myBooks = new Books();
-myBooks.populate(data.books);
 
-console.log(myBooks.booksFromModule('5021'));
-console.log(myBooks.booksWithStatus('new'));
-console.log(myBooks.incrementPriceOfbooks(0.1));
+const myUsers = new Users();  
+
+const myModules = new Modules();
+
+Promise.all([
+  myBooks.populate(),
+  myUsers.populate(),
+  myModules.populate()
+]).then(() => {
+  console.log(myBooks.booksFromModule('5021'));
+  console.log(myBooks.booksWithStatus('new'));
+}).catch((error) => {
+  console.error('Error al poblar los datos:', error);
+});
+
