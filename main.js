@@ -1,8 +1,6 @@
 
 import viteLogo from '/public/logoBatoi.png';
-import Modules from './src/model/modules.class';
-import Users from './src/model/users.class';
-import Books from './src/model/books.class';
+import Controller from './src/controller/controller.class.js';
 
 
 document.querySelector('header').innerHTML = `
@@ -24,8 +22,7 @@ document.querySelector('header').innerHTML = `
   
   document.querySelector('#messages').innerHTML = `
     <div>
-      <p>¡Bienvenido a BatoiBooks!</p>
-      <p>Disfruta explorando nuestra colección de libros.</p>
+
     </div>
   `;
 
@@ -51,8 +48,8 @@ document.querySelector('header').innerHTML = `
     <form id="bookForm">
       <div>
         <label for="id-module">Módulo:</label>
-        <select id="id-module">
-          <option>- Selecciona un módulo -</option>
+        <select id="id-module"> 
+          <option value="" disabled selected>- Selecciona un módulo -</option>
         </select>
       </div>
 
@@ -73,7 +70,9 @@ document.querySelector('header').innerHTML = `
 
       <div>
         <label>Estado:</label>
-        <!-- Aquí poned un radiobutton para cada estado -->
+        <p class="estado">Bueno<input type="radio" id="status" name="status" value="good" checked></p>
+        <p class="estado">Regular<input type="radio" id="status" name="status" value="regular"></p>
+        <p class="estado">Malo<input type="radio" id="status" name="status" value="bad"></p>
       </div>
 
       <div>
@@ -95,25 +94,8 @@ document.querySelector('header').innerHTML = `
     <p>Toni Mira Esteve</p>
   `
 
-const myBooks = new Books();
-
-const myUsers = new Users();
-
-const myModules = new Modules();
-
-Promise.all([
-  myBooks.populate(),
-  myUsers.populate(),
-  myModules.populate()
-]).then(() => {
-  console.log(myBooks.booksFromModule('5021'));
-  console.log(myBooks.booksWithStatus('new'));
-}).catch((error) => {
-  console.error('Error al poblar los datos:', error);
-});
-
 document.addEventListener('DOMContentLoaded', () => {
   const myController = new Controller()
-  myController.init()
+  myController.Init()
 })
 

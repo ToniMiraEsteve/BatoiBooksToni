@@ -8,9 +8,10 @@ class vista {
         this.message = document.getElementById('messages');
     }
 
-    rendererizarLibros(books) {
-        this.booksList.innerHTML = `
-            <img src="#" alt="Libro:${books.id}">
+    renderOptions(books) {
+        document.getElementById('list').innerHTML = `
+        <div class="card">
+            <img src="#" alt="Libro: ${books.id}">
             <div>
                 <h3>${books.title}</h3>
                 <h4>${books.editorial}</h4>
@@ -20,6 +21,7 @@ class vista {
                 <p>${books.comments}</p>
                 <h4>${books.price} €</h4>
             </div>
+        </div>
         `;
     }
 
@@ -53,6 +55,16 @@ class vista {
             callback(idABorrar);
          })
        }
+
+       
+    completarSelectModulos(modulos) {
+        this.moduleSelect.innerHTML = '';
+        modulos.forEach(modulo => {
+            const option = document.createElement('option');
+            option.textContent = modulo.nombre;
+            this.moduleSelect.appendChild(option);
+        });
+    }
 }
 
 export default vista;   
