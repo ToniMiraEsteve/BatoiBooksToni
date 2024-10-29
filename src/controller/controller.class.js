@@ -6,53 +6,44 @@ import users from '../model/users.class.js';
 
 export default class Controller {
     constructor() {
-        this.view = view;
-
-        this.book = books;
-        this.module = modules;
-        this.user = users;
+        this.view = new view();
+        this.book = new books();
+        this.module = new modules();
+        this.user = new users();
 
         
     }
 
 
 
-    Init(){
-        const myBooks = new books();
-        const myUsers = new modules();
-        const myModules = new users();
-        const vista = new view();
+    async Init() {
+        await this.book.populate();
+        await this.user.populate();
+        await this.module.populate();
+        
 
-        myBooks.populate().then(() => {
-            vista.renderOptions(myBooks.populate());
-        });
-        myUsers.populate().then(() => {
-            vista.renderOptions(myUsers.populate());
-        });
-        myModules.populate().then(() => {
-            vista.renderOptions(myModules.populate());
-        });
+        this.view.renderOptions(this.book.data);
+        this.view.completarSelectModulos(this.module.data); 
 
-
-        vista.setBookSubmitHandler(this.handleSubmitBook.bind(this));
-        vista.setBookSubmitHandler(this.handleRemoveBook.bind(this));
+        this.view.setBookSubmitHandler(this.handleSubmitBook.bind(this));
+        this.view.setBookRemoveHandler(this.handleRemoveBook.bind(this));
     }
 
 
     handleSubmitBook(bookData) {
         try {
-            this.books.addBook(bookData);
-            this.view.renderOptions(this.books.getBooks());
-            this.view.rendererizarLibros(bookData);
+            this.book.addBook(bookData); 
+            this.view.renderOptions(this.book.data); 
             this.view.mostrarMensaje('Libro añadido correctamente.', 'info');
         } catch (error) {
             this.view.mostrarMensaje(error.message, 'error');
         }
     }
 
+
     handleRemoveBook(bookId) {
-        this.books.removeBook(bookId);
-        this.view.renderOptions(this.books.getBooks());
+        this.book.removeBook(bookId);
+        this.view.renderOptions(this.book.data);
     }
 
 

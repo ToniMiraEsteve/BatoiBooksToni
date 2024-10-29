@@ -9,28 +9,28 @@ class vista {
     }
 
     renderOptions(books) {
-        document.getElementById('list').innerHTML = `
-        <div class="card">
-            <img src="#" alt="Libro: ${books.id}">
-            <div>
-                <h3>${books.title}</h3>
-                <h4>${books.editorial}</h4>
-                <p>${books.pages} páginas</p>
-                <p>Estado: ${books.condition}</p>
-                ${books.isSold ? `<p>Vendido el ${books.soldDate}</p>` : `<p>En venta</p>`}
-                <p>${books.comments}</p>
-                <h4>${books.price} €</h4>
+        document.getElementById('list').innerHTML = books.map(book => `
+            <div class="card">
+                <img src="#" alt="Libro: ${book.id}">
+                <div>
+                    <h3>${book.title}</h3>
+                    <h4>${book.editorial}</h4>
+                    <p>${book.pages} páginas</p>
+                    <p>Estado: ${book.condition}</p>
+                    ${book.isSold ? `<p>Vendido el ${book.soldDate}</p>` : `<p>En venta</p>`}
+                    <p>${book.comments}</p>
+                    <h4>${book.price} €</h4>
+                </div>
             </div>
-        </div>
-        `;
+        `).join('');
     }
 
     mostrarMensaje(mensaje, tipo) {
         this.message.innerHTML = `
-        <div class="_tipo-recibido_ alert alert-${tipo} alert-dismissible" role="alert">
-            ${mensaje}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="this.parentElement.remove()">x</button>
-        </div>
+            <div class="alert alert-${tipo} alert-dismissible" role="alert">
+                ${mensaje}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close" onclick="this.parentElement.remove()">x</button>
+            </div>
         `;
 
         if (tipo !== 'error') {
@@ -42,19 +42,19 @@ class vista {
 
     setBookSubmitHandler(callback) {  
         this.bookForm.addEventListener('submit', (event) => {
-            event.preventDefault()
+            event.preventDefault();
             const formData = new FormData(this.bookForm);
             const bookData = Object.fromEntries(formData.entries());
             callback(bookData);
-        })
-       }
+        });
+    }
        
-       setBookRemoveHandler(callback) {
-         this.remove.addEventListener('click', () => {
+    setBookRemoveHandler(callback) {
+        this.remove.addEventListener('click', () => {
             const idABorrar = document.getElementById('id-remove').value;
             callback(idABorrar);
-         })
-       }
+        });
+    }
 
        
     completarSelectModulos(modulos) {
