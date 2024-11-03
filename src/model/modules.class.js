@@ -11,7 +11,7 @@ export default class modules {
             const api = await api_modules.getDBModules();
             this.data = api.map(module => new Module(module.code, module.cliteral, module.vliteral, module.courseId));
         } catch (error) {
-            console.error("Error: Dato no encontrado", error);
+            console.log("Error: Dato no encontrado", 'error');
         }
     }
 

@@ -98,7 +98,7 @@ describe("Controller", () => {
     <div id="about"></div>
   `;
    controller = new Controller();
-  await controller.init();
+   await controller.init();
   });
   afterAll(() => {
     server.close();

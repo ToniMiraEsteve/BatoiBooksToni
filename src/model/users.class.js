@@ -11,7 +11,8 @@
                 const api = await api_user.getDBUsers();
                 this.data = api.map(user => new User(user.id, user.nick, user.email, user.password));
             } catch (error) {
-                console.error("Error: Dato no encontrado", error);
+                console.log("Error: Dato no encontrado", 'error');
+                throw error;
             }
         }
 
@@ -22,7 +23,7 @@
                 this.data.push(newUser);
                 return newUser;
             } catch (error) {
-                console.error('Error al agregar el Usuario:', error.message);
+                console.log('Error al agregar el Usuario:', 'error');
                 throw error;
             }
         }
@@ -66,7 +67,7 @@
                 this.data[index].password = updatedUser.password; 
                 return this.data[index]; 
             } catch (error) {
-                console.error('Error al cambiar la contraseña:', error);
+                console.log('Error al cambiar la contraseña:', 'error');
                 throw new Error('No se pudo cambiar la contraseña');
             }
         }

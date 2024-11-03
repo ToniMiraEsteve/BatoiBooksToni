@@ -21,9 +21,9 @@ document.querySelector('header').innerHTML = `
    `;
   
   document.querySelector('#messages').innerHTML = `
-    <div>
+  <div>
 
-    </div>
+  </div>
   `;
 
   document.querySelector('#container').innerHTML = `
@@ -39,50 +39,56 @@ document.querySelector('header').innerHTML = `
   `;
 
   document.querySelector('#form').innerHTML = `
-    <h2>Añadir libro</h2>
-    <div>
-      <label for="id-remove">Id:</label>
-      <input type="number" id="id-remove">
-      <button id="remove">Borrar libro</button>
-    </div>
-    <form id="bookForm">
+  <div id="form">
+      <h2>Añadir libro</h2>
       <div>
-        <label for="id-module">Módulo:</label>
-        <select id="id-module"> 
-          <option value="" disabled selected>- Selecciona un módulo -</option>
-        </select>
+          <label for="id-remove">Id:</label>
+          <input type="number" id="id-remove">
+          <button id="remove">Borrar libro</button>
       </div>
+      <form id="bookForm">
+          <div>
+              <label for="id-module">Código del módulo:</label>
+              <select id="id-module" name="moduleCode"> </select>
+          </div>
 
-      <div>
-        <label for="publisher">Editorial:</label>
-        <input type="text" id="publisher" required>
-      </div>
+          <div>
+              <label for="publisher">Editorial:</label>
+              <input type="text" id="publisher" name="publisher" required>
+          </div>
 
-      <div>
-        <label for="price">Precio:</label>
-        <input type="number" id="price">
-      </div>
+          <div>
+              <label for="price">Precio:</label>
+              <input type="number" id="price" name="price" required>
+          </div>
 
-      <div>
-        <label for="pages">Páginas:</label>
-        <input type="number" id="pages">
-      </div>
+          <div>
+              <label for="pages">Páginas:</label>
+              <input type="number" id="pages" name="pages" required>
+          </div>
 
-      <div>
-        <label>Estado:</label>
-        <p class="estado">Bueno<input type="radio" id="status" name="status" value="good" checked></p>
-        <p class="estado">Regular<input type="radio" id="status" name="status" value="regular"></p>
-        <p class="estado">Malo<input type="radio" id="status" name="status" value="bad"></p>
-      </div>
+          <div>
+              <label>Estado:</label>
+              <label>
+                  <input type="radio" name="status" value="good"> Good
+              </label>
+              <label>
+                  <input type="radio" name="status" value="bad"> Bad
+              </label>
+              <label>
+                  <input type="radio" name="status" value="regular"> Regular
+              </label>
+          </div>
 
-      <div>
-        <label for="comments">Comentarios:</label>
-        <textarea id="comments"></textarea>
-      </div>
+          <div>
+              <label for="comments">Comentarios:</label>
+              <textarea id="comments" name="comments"></textarea>
+          </div>
+          <button type="submit">Añadir</button>
+          <button type="reset">Reset</button>
+      </form>
+  </div>
 
-      <button type="submit">Añadir</button>
-      <button type="reset">Reset</button>
-    </form>
   `;
 
   document.querySelector('#about').innerHTML = `
@@ -94,8 +100,8 @@ document.querySelector('header').innerHTML = `
     <p>Toni Mira Esteve</p>
   `
 
-document.addEventListener('DOMContentLoaded', () => {
-  const myController = new Controller()
-  myController.Init()
+  document.addEventListener('DOMContentLoaded', () => {
+   const myController = new Controller()
+  myController.init()
 })
 

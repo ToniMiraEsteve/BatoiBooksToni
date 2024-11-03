@@ -11,7 +11,8 @@ export default class books {
             const api = await api_books.getDBBooks();
             this.data = api.map(book =>new Book(book));
         }catch(Error){
-            console.error("Error Dato no encontrado", Error);
+            console.log("Error Dato no encontrado", 'error');
+            throw error;
         }
     };
 
@@ -22,7 +23,7 @@ export default class books {
             this.data.push(newBook);
             return newBook;
         } catch (error) {
-            console.error('Error al agregar el libro:', error.message);
+            console.log('Error al agregar el libro:', error.message);
             throw error;
         }
     }
@@ -115,5 +116,8 @@ export default class books {
         const LibroNoVendidos = this.data.filter((book) => book.soldDate === "")
         return LibroNoVendidos;
     };
+    incrementPriceOfbooks(percentage) {
+        return this.data.map(book => ({ ...book, price: book.price + (book.price * percentage) }));
+    }
 
 }
