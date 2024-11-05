@@ -1,4 +1,3 @@
-/* General Reset */
 * {
   margin: 0;
   padding: 0;
@@ -10,14 +9,9 @@ body {
   line-height: 1.6;
   color: #333;
   background-color: #f9f9f9;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 0;
-  min-height: 100vh;
+  padding-top: 220px;
 }
 
-/* Header */
 header {
   width: 100%;
   background-color: #535bf2;
@@ -25,19 +19,35 @@ header {
   padding: 1em;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: fixed; 
+  top: 0;
+  left: 0;
+  z-index: 1000;
 }
 
 header h1 {
-  font-size: 2.5em;
+  font-size: 2em;
   font-weight: 700;
+  margin: 0;
 }
+
+header nav {
+  margin-top: 0.5em;
+}
+
 header ul {
   list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  gap: 1em;
 }
+
 header ul li {
   display: inline;
-  margin: 0 1em;
 }
+
 header ul li a {
   color: #fff;
   font-weight: 500;
@@ -45,7 +55,10 @@ header ul li a {
   transition: color 0.3s ease;
 }
 
-/* Main Content */
+header ul li a:hover {
+  color: #d0d4ff;
+}
+
 main {
   display: flex;
   flex-direction: column;
@@ -54,7 +67,6 @@ main {
   width: 100%;
 }
 
-/* Messages */
 #messages {
   width: 90%;
   max-width: 800px;
@@ -68,7 +80,6 @@ main {
   text-align: center;
 }
 
-/* Container */
 #container {
   width: 90%;
   max-width: 800px;
@@ -81,7 +92,6 @@ main {
   gap: 2em;
 }
 
-/* Sections */
 section {
   padding: 1.5em;
   background-color: #f7f7f7;
@@ -97,19 +107,15 @@ section h2 {
   padding-bottom: 0.3em;
 }
 
-/* Footer */
 footer {
   width: 100%;
   background-color: #535bf2;
   color: #fff;
   text-align: center;
   padding: 1em;
-  position: relative;
-  bottom: 0;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* Links */
 a {
   color: #646cff;
   text-decoration: none;
@@ -121,7 +127,6 @@ a:hover {
   color: #535bf2;
 }
 
-/* Buttons */
 button {
   background-color: #535bf2;
   color: #fff;
@@ -143,22 +148,9 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-  header h1 {
-    font-size: 2em;
-  }
-  #container {
-    padding: 1.5em;
-  }
-  section h2 {
-    font-size: 1.6em;
-  }
-}
-
 #list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Tres columnas de igual tamaño */
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
   padding: 20px;
   justify-items: center;
@@ -166,7 +158,7 @@ button:focus-visible {
 }
 
 .card {
-  width: 100%; /* Se ajusta al tamaño de la columna */
+  width: 100%;
   max-width: 300px;
   background-color: #fff;
   border-radius: 8px;
@@ -228,15 +220,88 @@ button:focus-visible {
   color: #43A047;
 }
 
-/* Responsive: dos columnas en pantallas medianas y una en pequeñas */
+/* Media Queries for Responsiveness */
+
 @media (max-width: 992px) {
   #list {
-      grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 600px) {
   #list {
-      grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
   }
+
+  header h1 {
+    font-size: 1.8em;
+  }
+
+  #container {
+    padding: 1.5em;
+  }
+
+  section h2 {
+    font-size: 1.6em;
+  }
+
+  header ul {
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  #messages {
+    width: 95%;
+    padding: 0.5em;
+  }
+
+  .card {
+    max-width: 100%; /* Tarjetas ocuparán todo el ancho disponible en móvil */
+  }
+}
+
+#form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+label {
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  height: 40px; 
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1em;
+  margin: 0; 
+}
+
+input[type="radio"] {
+  margin-right: 10px;
+  margin-top: 5px;
+}
+
+button {
+  align-self: flex-start;
+  margin-top: 10px;
+}
+
+input,
+select,
+textarea {
+  display: block;
+  width: 100%;
+}
+
+input[type="radio"] {
+  display: inline-block; 
+  width: auto;
+  margin-top: 0;
 }
