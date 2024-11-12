@@ -22,11 +22,10 @@ export default class Controller {
             await this.book.populate();
             await this.user.populate();
             await this.module.populate();
-            
-            
+    
+            this.mostrarSeccion('list');
             this.view.renderOptions(this.book.data);
             this.view.completarSelectModulos(this.module.data);
-
             this.view.setBookSubmitHandler(this.handleSubmitBook.bind(this));
 
         } catch (error) {
@@ -52,6 +51,7 @@ export default class Controller {
                 
                     await this.book.changeBook  (existingBook);  
                     this.view.mostrarMensaje('Libro editado correctamente.', 'info');
+                    this.mostrarSeccion('list');
                     }else{
                         throw new Error('Error: El libro con el ID proporcionado no existe.', 'error');
                     }
@@ -71,6 +71,7 @@ export default class Controller {
         
                     await this.book.addBook(newBook);
                     this.view.mostrarMensaje('Libro añadido correctamente.', 'info');
+                    this.mostrarSeccion('list');
                 }
             this.view.renderFortToAddBooks();
             this.view.renderOptions(this.book.data);
@@ -89,43 +90,71 @@ export default class Controller {
             await this.book.removeBook(bookId);
             this.view.renderOptions(this.book.data);
             this.view.mostrarMensaje('Libro eliminado correctamente.', 'info');
+            this.mostrarSeccion('list');
         } catch (error) {
             this.view.mostrarMensaje('Error' +error.message , 'error');
         }
     }
      handlerBookButonClicked() {
-        document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', (event) => {
-                const bookId = event.currentTarget.getAttribute('data-id');
-                this.carrito.removeItem(bookId);
-                this.handleRemoveBook(bookId);
-            });
-        });
-
-        document.querySelectorAll('.edit').forEach(button => {
-            button.addEventListener('click', async (event) => {
-                const bookId = event.currentTarget.getAttribute('data-id');
-                const book = this.book.data.find(book => book.id == bookId);
-                const selectedModuleCode = book.moduleCode;
-        
-                this.view.renderFortToEditBooks(this.book.data, bookId, this.module.data);
-                this.view.completarSelectModulos(this.module.data, selectedModuleCode);
-        
-                this.view.setBookSubmitHandler((bookData) => {
-                    bookData.id = bookId;
-                    this.handleSubmitBook(bookData);
+            document.querySelectorAll('.delete-btn').forEach((btn) => {
+                btn.addEventListener('click', (event) => {
+                    const bookId = event.currentTarget.getAttribute('data-id');
+                    this.carrito.removeItem(bookId);
+                    this.handleRemoveBook(bookId);
                 });
             });
-        });
-
-        document.querySelectorAll('.cart').forEach(button => {
-            button.addEventListener('click', async (event) => {
-                const bookId = event.currentTarget.getAttribute('data-id');
-                const book = this.book.getBookById(bookId);
-                await this.carrito.addItem(book);
+        
+            document.querySelectorAll('.edit').forEach((btn) => {
+                btn.addEventListener('click', async (event) => {
+                    const bookId = event.currentTarget.getAttribute('data-id');
+                    const book = this.book.data.find(book => book.id == bookId);
+                    const selectedModuleCode = book.moduleCode;
+                    this.mostrarSeccion('form');
+        
+                    this.view.renderFortToEditBooks(this.book.data, bookId, this.module.data);
+                    this.view.completarSelectModulos(this.module.data, selectedModuleCode);
+        
+                    this.view.setBookSubmitHandler((bookData) => {
+                        bookData.id = bookId;
+                        this.handleSubmitBook(bookData);
+                    });
+                });
             });
-        });
-    }
+        
+            document.querySelectorAll('.cart').forEach((btn) => {
+                btn.addEventListener('click', async (event) => {
+                    const bookId = event.currentTarget.getAttribute('data-id');
+                    const book = this.book.getBookById(bookId);
+                    await this.carrito.addItem(book);
+                });
+            }); 
+            
+            document.querySelectorAll('.boton-list').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    this.mostrarSeccion('list');
+                });
+            });
+        
+            document.querySelectorAll('.boton-form').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    this.mostrarSeccion('form');
+                });
+            });
+        
+            document.querySelectorAll('.boton-about').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    this.mostrarSeccion('about');
+                });
+            });
+        }
+            
+            mostrarSeccion(seccion) {
+              document.getElementById('list').style.display = seccion === 'list' ? 'grid' : 'none';
+              document.getElementById('form').style.display = seccion === 'form' ? 'block' : 'none';
+              document.getElementById('about').style.display = seccion === 'about' ? 'block' : 'none';
+            }
+            
+    
 }
 
 

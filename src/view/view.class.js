@@ -33,7 +33,7 @@ export default class vista {
                         <span class="material-icons">add_shopping_cart</span>
                     </button>
                     <button class="edit" data-id="${book.id}">
-                        <span class="material-icons">edit</span>
+                        <span class="material-icons" >edit</span>
                     </button>
                     <button class="delete-btn" data-id="${book.id}">
                         <span class="material-icons">delete</span>

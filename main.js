@@ -12,9 +12,9 @@ document.querySelector('header').innerHTML = `
   </div>
   <div id="enlaces">
     <ul>
-      <li><a href="#list">Ver libros</a></li>
-      <li><a href="#form">Añadir libro</a></li>
-      <li><a href="#about">Acerca de</a></li>
+      <li><a href="#list" class="boton-list">Ver libros</a></li>
+      <li><a href="#form" class="boton-form">Añadir libro</a></li>
+      <li><a href="#about" class="boton-about">Acerca de</a></li>
     </ul>
   </div>
    `;
@@ -42,9 +42,11 @@ document.querySelector('header').innerHTML = `
   `;
 
   document.querySelector('#about').innerHTML = `
-    <h2>Acerca de</h2>
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc id ultrices ultricies, nisl nunc tincidunt nunc, non efficitur nunc nisl ac nunc. Sed euismod, nunc nec lacinia tincidunt, nunc nunc lacinia nunc, nec nunc nunc nunc. Sed nec nunc nunc. Nullam auctor, nunc id ultrices ultricies, nisl nunc tincidunt nunc, non efficitur nunc nisl ac nunc. Sed euismod, nunc nec lacinia tincidunt, nunc nunc lacinia nunc, nec nunc nunc nunc. Sed nec nunc nunc.</p>
-  `;
+    <div class="about">
+      <h2>Acerca de</h2>
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam auctor, nunc id ultrices ultricies, nisl nunc tincidunt nunc, non efficitur nunc nisl ac nunc. Sed euismod, nunc nec lacinia tincidunt, nunc nunc lacinia nunc, nec nunc nunc nunc. Sed nec nunc nunc. Nullam auctor, nunc id ultrices ultricies, nisl nunc tincidunt nunc, non efficitur nunc nisl ac nunc. Sed euismod, nunc nec lacinia tincidunt, nunc nunc lacinia nunc, nec nunc nunc nunc. Sed nec nunc nunc.</p>
+    </div>
+    `;
   
   document.querySelector('footer').innerHTML = `
     <p>Toni Mira Esteve</p>
@@ -53,5 +55,6 @@ document.querySelector('header').innerHTML = `
   document.addEventListener('DOMContentLoaded', () => {
    const myController = new Controller()
   myController.init()
-})
+  })
+
 
