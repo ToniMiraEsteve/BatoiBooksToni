@@ -2,6 +2,7 @@ import views from '../view/view.class.js';
 import books from '../model/books.class.js';
 import modules from '../model/modules.class.js';
 import users from '../model/users.class.js';
+import carrito from '../model/cart.class.js';
 
 export default class Controller {
     constructor() {
@@ -9,6 +10,7 @@ export default class Controller {
         this.book = new books();
         this.module = new modules();
         this.user = new users();
+        this.carrito = new carrito();
 
         
     }
@@ -95,20 +97,32 @@ export default class Controller {
         document.querySelectorAll('.delete-btn').forEach(button => {
             button.addEventListener('click', (event) => {
                 const bookId = event.currentTarget.getAttribute('data-id');
+                this.carrito.removeItem(bookId);
                 this.handleRemoveBook(bookId);
-                this.renderOptions(this.book.data);
             });
         });
 
         document.querySelectorAll('.edit').forEach(button => {
             button.addEventListener('click', async (event) => {
                 const bookId = event.currentTarget.getAttribute('data-id');
-                this.view.renderFortToEditBooks(this.book.data, bookId);
-                this.view.completarSelectModulos(this.module.data);
+                const book = this.book.data.find(book => book.id == bookId);
+                const selectedModuleCode = book.moduleCode;
+        
+                this.view.renderFortToEditBooks(this.book.data, bookId, this.module.data);
+                this.view.completarSelectModulos(this.module.data, selectedModuleCode);
+        
                 this.view.setBookSubmitHandler((bookData) => {
                     bookData.id = bookId;
                     this.handleSubmitBook(bookData);
                 });
+            });
+        });
+
+        document.querySelectorAll('.cart').forEach(button => {
+            button.addEventListener('click', async (event) => {
+                const bookId = event.currentTarget.getAttribute('data-id');
+                const book = this.book.getBookById(bookId);
+                await this.carrito.addItem(book);
             });
         });
     }

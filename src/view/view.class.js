@@ -29,8 +29,8 @@ export default class vista {
                     ${book.soldDate ? `<p>Vendido el ${book.soldDate}</p>` : `<p>En venta</p>`}
                     <p>${book.comments}</p>
                     <h4>${book.price} €</h4>
-                    <button>
-                        <span class="material-icons" id="carrocompra">add_shopping_cart</span>
+                    <button class="cart" data-id="${book.id}">
+                        <span class="material-icons">add_shopping_cart</span>
                     </button>
                     <button class="edit" data-id="${book.id}">
                         <span class="material-icons">edit</span>
@@ -108,30 +108,34 @@ export default class vista {
     }
 
        
-            completarSelectModulos(modulos) {
-                this.moduleSelect = document.getElementById('id-module');
-                if (!this.moduleSelect) {
-                    this.mostrarMensaje('Error: El selector de módulos (moduleSelect) no está definido o no existe en el DOM.', 'error');
-                    return;
-                }
-            
-                this.moduleSelect.innerHTML = ''; 
-
-                const defaultOption = document.createElement('option');
-                defaultOption.value = '';
-                defaultOption.textContent = '- Selecciona un módulo -';
-                defaultOption.disabled = true;
-                defaultOption.selected = true;
-                this.moduleSelect.appendChild(defaultOption);
-
-                modulos.forEach(modulo => {
-                    const option = document.createElement('option');
-                    option.value = modulo.code;
-                    option.textContent = modulo.cliteral; 
-                    this.moduleSelect.appendChild(option); 
-                });
+    completarSelectModulos(modulos, selectedModuleCode = '') {
+        this.moduleSelect = document.getElementById('id-module');
+        if (!this.moduleSelect) {
+            this.mostrarMensaje('Error: El selector de módulos (moduleSelect) no está definido o no existe en el DOM.', 'error');
+            return;
+        }
+    
+        this.moduleSelect.innerHTML = ''; 
+    
+        const defaultOption = document.createElement('option');
+        defaultOption.value = '';
+        defaultOption.textContent = '- Selecciona un módulo -';
+        defaultOption.disabled = true;
+        defaultOption.selected = true;
+        this.moduleSelect.appendChild(defaultOption);
+    
+        modulos.forEach(modulo => {
+            const option = document.createElement('option');
+            option.value = modulo.code;
+            option.textContent = modulo.cliteral;
+    
+            if (modulo.code === selectedModuleCode) {
+                option.selected = true;
             }
-
+    
+            this.moduleSelect.appendChild(option);
+        });
+    }
             
     
 
@@ -188,9 +192,22 @@ export default class vista {
         
     }
 
-    renderFortToEditBooks(books, bookId){
+    renderFortToEditBooks(books, bookId, modules){
         const book = books.find(book => book.id == bookId);
-        console.log("Rendering edit form for book:", book);
+
+        if (!book || !book.moduleCode) {
+            console.error('No se encontró el libro o el módulo no está definido');
+            return;
+        }
+    
+        const moduleOptions = modules.map(module => {
+            const selected = module.code === book.moduleCode ? 'selected' : '';
+            return `
+                <option value="${module.code}" ${selected}>
+                    ${module.cliteral} (${module.code})
+                </option>
+            `;
+        }).join('');
         this.form.innerHTML = `
             <div class="form">
                 <h2>Editar libro</h2>
@@ -202,7 +219,9 @@ export default class vista {
 
                     <div>
                         <label for="id-module">Código del módulo:</label>
-                        <select id="id-module" name="moduleCode"></select>
+                        <select id="id-module" name="moduleCode">
+                            ${moduleOptions}
+                        </select>
                     </div>
 
                     <div>
