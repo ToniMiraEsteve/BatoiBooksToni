@@ -31,7 +31,7 @@ export default class books {
     async removeBook(bookId){
         try {
             const removedBook = await api_books.removeDBBook(bookId);
-            const index = await api_books.getDBBook(bookId);
+            const index = this.data.findIndex(book => book.id === bookId);
 
             if (index !== -1) {
                 this.data.splice(index,1);

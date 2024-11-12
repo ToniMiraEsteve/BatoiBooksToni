@@ -1,16 +1,24 @@
-class vista {
-    constructor() {
+export default class vista {
+    constructor(controller) {
+        this.form = document.getElementById('form');
+
+        this.renderFortToAddBooks();
+        
         this.booksList = document.getElementById('list');
         this.about = document.getElementById('about');
-        this.form = document.getElementById('form');
-        this.remove = document.getElementById('remove');
+        this.remove = document.getElementById('delete');
         this.bookForm = document.getElementById('bookForm');
         this.message = document.getElementById('messages'); 
-        this.moduleSelect = document.getElementById('id-module');
+        
+
+        
+        this.controller = controller;
+        
+        
     }
 
     renderOptions(books) {
-        document.getElementById('list').innerHTML = books.map(book => `
+        this.booksList.innerHTML = books.map(book => `
             <div class="card">
                 <img src="#">
                 <div>
@@ -21,9 +29,20 @@ class vista {
                     ${book.soldDate ? `<p>Vendido el ${book.soldDate}</p>` : `<p>En venta</p>`}
                     <p>${book.comments}</p>
                     <h4>${book.price} €</h4>
+                    <button>
+                        <span class="material-icons" id="carrocompra">add_shopping_cart</span>
+                    </button>
+                    <button class="edit" data-id="${book.id}">
+                        <span class="material-icons">edit</span>
+                    </button>
+                    <button class="delete-btn" data-id="${book.id}">
+                        <span class="material-icons">delete</span>
+                    </button>
                 </div>
             </div>
         `).join('');
+
+        this.controller.handlerBookButonClicked();
     }
 
     mostrarMensaje(mensaje, tipo) {
@@ -89,27 +108,143 @@ class vista {
     }
 
        
-    completarSelectModulos(modulos) {
-        if (!this.moduleSelect) {
-            this.mostrarMensaje('Error: El selector de módulos (moduleSelect) no está definido o no existe en el DOM.', 'error');
-            return;
-        }
+            completarSelectModulos(modulos) {
+                this.moduleSelect = document.getElementById('id-module');
+                if (!this.moduleSelect) {
+                    this.mostrarMensaje('Error: El selector de módulos (moduleSelect) no está definido o no existe en el DOM.', 'error');
+                    return;
+                }
+            
+                this.moduleSelect.innerHTML = ''; 
+
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '- Selecciona un módulo -';
+                defaultOption.disabled = true;
+                defaultOption.selected = true;
+                this.moduleSelect.appendChild(defaultOption);
+
+                modulos.forEach(modulo => {
+                    const option = document.createElement('option');
+                    option.value = modulo.code;
+                    option.textContent = modulo.cliteral; 
+                    this.moduleSelect.appendChild(option); 
+                });
+            }
+
+            
     
-        this.moduleSelect.innerHTML = ''; 
 
-        const defaultOption = document.createElement('option');
-        defaultOption.value = '';
-        defaultOption.textContent = '- Selecciona un módulo -';
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
-        this.moduleSelect.appendChild(defaultOption);
+    renderFortToAddBooks(){
+        
+        if (this.form) {
+            this.form.innerHTML = `
+            <div class="form">
+                <h2>Añadir libro</h2>
+                <form id="bookForm">
+                    <div>
+                        <label for="id-module">Código del módulo:</label>
+                        <select id="id-module" name="moduleCode"> </select>
+                    </div>
 
-        modulos.forEach(modulo => {
-            const option = document.createElement('option');
-            option.value = modulo.code;
-            option.textContent = modulo.cliteral; 
-            this.moduleSelect.appendChild(option); 
-        });
+                    <div>
+                        <label for="publisher">Editorial:</label>
+                        <input type="text" id="publisher" name="publisher" required>
+                    </div>
+
+                    <div>
+                        <label for="price">Precio:</label>
+                        <input type="number" id="price" name="price" required>
+                    </div>
+
+                    <div>
+                        <label for="pages">Páginas:</label>
+                        <input type="number" id="pages" name="pages" required>
+                    </div>
+
+                    <div>
+                        <label>Estado:</label>
+                        <label>
+                            <input type="radio" name="status" value="good"> Good |
+                        </label>
+                        <label>
+                            <input type="radio" name="status" value="bad"> Bad |
+                        </label>
+                        <label>
+                            <input type="radio" name="status" value="regular"> Regular
+                        </label>
+                    </div>
+
+                    <div>
+                        <label for="comments">Comentarios:</label>
+                        <textarea id="comments" name="comments"></textarea>
+                    </div>
+                    <button type="submit">Añadir</button>
+                    <button type="reset">Reset</button>
+                </form>    
+            </div>
+            `;
+        }
+        
+    }
+
+    renderFortToEditBooks(books, bookId){
+        const book = books.find(book => book.id == bookId);
+        console.log("Rendering edit form for book:", book);
+        this.form.innerHTML = `
+            <div class="form">
+                <h2>Editar libro</h2>
+                <form id="bookForm">
+                    <div>
+                        <label for="id">ID del Libro:</label>
+                        <input id="id" name="ID" value="${book.id}" readonly>
+                    </div>
+
+                    <div>
+                        <label for="id-module">Código del módulo:</label>
+                        <select id="id-module" name="moduleCode"></select>
+                    </div>
+
+                    <div>
+                        <label for="publisher">Editorial:</label>
+                        <input type="text" id="publisher" name="publisher" value="${book.publisher}">
+                    </div>
+
+                    <div>
+                        <label for="price">Precio:</label>
+                        <input type="number" id="price" name="price" value="${book.price}">
+                    </div>
+
+                    <div>
+                        <label for="pages">Páginas:</label>
+                        <input type="number" id="pages" name="pages" value="${book.pages}">
+                    </div>
+
+                     <div>
+                        <label>Estado:</label>
+                        <label>
+                            <input type="radio" name="status" value="good" ${book.status === 'good' ? 'checked' : ''}> Good |
+                        </label>
+                        <label>
+                            <input type="radio" name="status" value="bad" ${book.status === 'bad' ? 'checked' : ''}> Bad |
+                        </label>
+                        <label>
+                            <input type="radio" name="status" value="regular" ${book.status === 'regular' ? 'checked' : ''}> Regular
+                        </label>
+                    </div>
+
+                    <div>
+                        <label for="comments">Comentarios:</label>
+                        <textarea id="comments" name="comments">${book.comments}</textarea>
+                    </div>
+
+                    <button type="submit">Editar</button>
+                    <button type="reset">Reset</button>
+                </form>    
+            </div>
+        `;
+
     }
 }
-export default vista;   
+
+
