@@ -35,8 +35,13 @@ export default class Controller {
 
     async handleSubmitBook(bookData) {
         try {
+            const form = document.getElementById("bookForm");
+            if (!form.checkValidity()) {
+                this.view.mostrarMensaje("Hay errores en el formulario. Por favor, corrígelos antes de enviar.", 'error');
+                return;
+            }
             if (!bookData.moduleCode || !bookData.publisher || !bookData.price || !bookData.pages || !bookData.status) {
-                throw new Error('Error: Todos los campos requeridos deben ser completados para añadir un libro.'); // Corrige el error tipográfico
+                throw new Error('Error: Todos los campos requeridos deben ser completados para añadir un libro.');
             }
 
             if(bookData.id !== undefined){

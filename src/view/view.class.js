@@ -17,6 +17,77 @@ export default class vista {
         
     }
 
+    validateForm() {
+        const form = document.getElementById("bookForm");
+        
+        this.clearErrorMessages();
+
+        let isValid = true;
+
+        const moduleSelect = document.getElementById("id-module");
+        if (!moduleSelect.value) {
+            moduleSelect.setCustomValidity('El código del módulo es obligatorio.');
+            isValid = false;
+        } else {
+            moduleSelect.setCustomValidity('');
+        }
+
+        const publisher = document.getElementById("publisher");
+        if (!publisher.value.trim()) {
+            publisher.setCustomValidity('La editorial es obligatoria.');
+            isValid = false;
+        } else {
+            publisher.setCustomValidity('');
+        }
+
+        const price = document.getElementById("price");
+        if (!price.value || price.value < 0) {
+            price.setCustomValidity('El precio debe ser un número mayor o igual que 0.');
+            isValid = false;
+        } else {
+            price.setCustomValidity('');
+        }
+
+        const pages = document.getElementById("pages");
+        if (!pages.value || pages.value < 0) {
+            pages.setCustomValidity('Las páginas deben ser un número entero mayor o igual que 0.');
+            isValid = false;
+        } else {
+            pages.setCustomValidity('');
+        }
+
+        const status = document.querySelector("input[name='status']:checked");
+        if (!status) {
+            const statusGroup = document.querySelector('.status-group');
+            statusGroup.setCustomValidity('Debe seleccionar un estado para el libro.');
+            isValid = false;
+        } else {
+            status.setCustomValidity('');
+        }
+
+        return isValid;
+    }
+
+
+    clearErrorMessages() {
+        const errorDivs = this.form.querySelectorAll('.error-message');
+        errorDivs.forEach(div => div.remove());
+    }
+
+    showErrorMessage(field, message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.classList.add('error-message');
+        errorDiv.style.color = 'red';
+        errorDiv.textContent = message;
+
+        const existingMessage = field.nextElementSibling;
+        if (existingMessage && existingMessage.classList.contains('error-message')) {
+            existingMessage.remove();
+        }
+
+        field.insertAdjacentElement('afterend', errorDiv);
+    }
+
     renderOptions(books) {
         this.booksList.innerHTML = books.map(book => `
             <div class="card">
@@ -53,7 +124,6 @@ export default class vista {
                 <button type="button" class="btn-close" aria-label="Close" onclick="this.parentElement.remove()">x</button>
             </div>
         `;
-
         if (tipo !== 'error') {
             setTimeout(() => {
                 this.message.innerHTML = '';
@@ -69,6 +139,11 @@ export default class vista {
 
         form.addEventListener("submit", (event) => {
             event.preventDefault();
+
+           
+            if (!this.validateForm()) {
+                return; 
+            }
 
             const bookData = {
                 moduleCode: document.querySelector("#id-module").value,
@@ -139,33 +214,34 @@ export default class vista {
             
     
 
-    renderFortToAddBooks(){
-        
+    renderFormToAddBooks(){
         if (this.form) {
             this.form.innerHTML = `
             <div class="form">
                 <h2>Añadir libro</h2>
-                <form id="bookForm">
+                <form id="bookForm" novalidate> 
                     <div>
                         <label for="id-module">Código del módulo:</label>
-                        <select id="id-module" name="moduleCode"> </select>
+                        <select id="id-module" name="moduleCode" required> 
+                            <!-- Opciones para el módulo, se deben cargar dinámicamente aquí -->
+                        </select>
                     </div>
-
+    
                     <div>
                         <label for="publisher">Editorial:</label>
                         <input type="text" id="publisher" name="publisher" required>
                     </div>
-
+    
                     <div>
                         <label for="price">Precio:</label>
-                        <input type="number" id="price" name="price" required>
+                        <input type="number" id="price" name="price" required min="0" step="0.01">
                     </div>
-
+    
                     <div>
                         <label for="pages">Páginas:</label>
-                        <input type="number" id="pages" name="pages" required>
+                        <input type="number" id="pages" name="pages" required min="0" step="1">
                     </div>
-
+    
                     <div>
                         <label>Estado:</label>
                         <label>
@@ -178,7 +254,7 @@ export default class vista {
                             <input type="radio" name="status" value="regular"> Regular
                         </label>
                     </div>
-
+    
                     <div>
                         <label for="comments">Comentarios:</label>
                         <textarea id="comments" name="comments"></textarea>
@@ -189,8 +265,8 @@ export default class vista {
             </div>
             `;
         }
-        
     }
+    
 
     renderFortToEditBooks(books, bookId, modules){
         const book = books.find(book => book.id == bookId);
