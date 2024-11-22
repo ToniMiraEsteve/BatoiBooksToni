@@ -16,9 +16,9 @@ import {
   getUserIndexById, 
   getUserByNickName, 
   getModuleByCode 
-} from '/srv/funciones.js';
+} from './src/functions.js';
 
-import { libros } from '/srv/services/datos.js';
+import  data  from './src/services/datos.js';
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -32,6 +32,7 @@ document.querySelector('#app').innerHTML = `
       Abre la consola para ver el resultado
   </div>
 `
+const libros = data.books;
 
 const librosUsuario4 = booksFromUser(libros, 4);
 console.log("Libros del usuario 4:");
