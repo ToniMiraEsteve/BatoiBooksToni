@@ -36,55 +36,84 @@ export default class Controller {
     async handleSubmitBook(bookData) {
         try {
             const form = document.getElementById("bookForm");
+            const moduleSelect = form.querySelector('[name="moduleCode"]');
+
+            moduleSelect.addEventListener('change', () => {
+                moduleSelect.setCustomValidity('');
+                moduleSelect.reportValidity();
+            });
             if (!form.checkValidity()) {
                 this.view.mostrarMensaje("Hay errores en el formulario. Por favor, corrígelos antes de enviar.", 'error');
                 return;
             }
-            if (!bookData.moduleCode || !bookData.publisher || !bookData.price || !bookData.pages || !bookData.status) {
+    
+            const userId = this.user.data.id;
+            const moduleCode = bookData.moduleCode;
+    
+            if (!bookData || !bookData.moduleCode || !bookData.publisher || !bookData.price || !bookData.pages || !bookData.status) {
                 throw new Error('Error: Todos los campos requeridos deben ser completados para añadir un libro.');
             }
-
-            if(bookData.id !== undefined){
-                const existingBook = this.book.data.find(book => book.id === bookData.id);
-                if(existingBook){
-                    existingBook.moduleCode = bookData.moduleCode;
-                    existingBook.publisher = bookData.publisher;
-                    existingBook.price = parseFloat(bookData.price);
-                    existingBook.pages = parseInt(bookData.pages, 10);
-                    existingBook.status = bookData.status;
-                    existingBook.comments = bookData.comments;
-                
-                    await this.book.changeBook  (existingBook);  
-                    this.view.mostrarMensaje('Libro editado correctamente.', 'info');
-                    this.mostrarSeccion('list');
-                    }else{
-                        throw new Error('Error: El libro con el ID proporcionado no existe.', 'error');
-                    }
-                } else {
-                    
-                    const newBookId = this.book.data.length + 1;  
-        
-                    const newBook = {
-                        comments: bookData.comments || "", 
-                        moduleCode: bookData.moduleCode,
-                        pages: parseInt(bookData.pages, 10), 
-                        price: parseFloat(bookData.price),
-                        publisher: bookData.publisher,
-                        status: bookData.status, 
-                        id: newBookId.toString()
-                    };
-        
-                    await this.book.addBook(newBook);
-                    this.view.mostrarMensaje('Libro añadido correctamente.', 'info');
-                    this.mostrarSeccion('list');
+            
+    
+            if (bookData.id) {
+                const existingBook = this.book.getBookById(bookData.id);
+                if (!existingBook) {
+                    throw new Error('Error: El libro con el ID proporcionado no existe.');
                 }
-            this.view.renderFortToAddBooks();
+    
+                if (existingBook.moduleCode !== moduleCode) {
+                    const bookExists = await this.book.bookExists(userId, moduleCode);
+                    if (bookExists) {
+                        moduleSelect.setCustomValidity('Ya tienes un libro para este módulo. Cambia el módulo o no podrás guardar.');
+                        this.view.mostrarMensaje('No puedes añadir más de un libro para el mismo módulo.', 'error');
+                        return;
+                    }
+                }
+    
+                existingBook.moduleCode = bookData.moduleCode;
+                existingBook.publisher = bookData.publisher;
+                existingBook.price = parseFloat(bookData.price);
+                existingBook.pages = parseInt(bookData.pages, 10);
+                existingBook.status = bookData.status;
+                existingBook.comments = bookData.comments;
+    
+                await this.book.changeBook(existingBook);
+                this.view.mostrarMensaje('Libro editado correctamente.', 'info');
+            } else {
+                const bookExists = await this.book.bookExists(userId, moduleCode);
+                if (bookExists) {
+                    moduleSelect.setCustomValidity('Ya tienes un libro para este módulo. Cambia el módulo o no podrás guardar.');
+                    moduleSelect.reportValidity();
+                    this.view.mostrarMensaje('No puedes añadir más de un libro para el mismo módulo.', 'error');
+                    return;
+                }
+    
+                const newBookId = (this.book.data.length + 1).toString();
+                const newBook = {
+                    id: newBookId,
+                    comments: bookData.comments || "",
+                    moduleCode: bookData.moduleCode,
+                    pages: parseInt(bookData.pages, 10),
+                    price: parseFloat(bookData.price),
+                    publisher: bookData.publisher,
+                    status: bookData.status,
+                };
+    
+                await this.book.addBook(newBook);
+                this.view.mostrarMensaje('Libro añadido correctamente.', 'info');
+            }
+    
+            this.mostrarSeccion('list');
+            this.view.renderFormToAddBooks();
             this.view.renderOptions(this.book.data);
             this.view.completarSelectModulos(this.module.data);
+    
         } catch (error) {
-            this.view.mostrarMensaje('Error: ' + error.message, 'error'); 
+            this.view.mostrarMensaje('Error: ' + error.message, 'error');
         }
     }
+    
+    
     
     async handleRemoveBook(bookId) {
         try {

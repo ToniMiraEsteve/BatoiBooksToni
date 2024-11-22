@@ -18,6 +18,17 @@ async function getDBBook(bookId){
     return book.json();
 }
 
+async function checkBookExistsInDB(userId, moduleCode) {
+    const response = await fetch(`${SERVER}/books?userId=${userId}&moduleCode=${moduleCode}`);
+    
+    if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+    }
+    
+    const data = await response.json();
+    return Array.isArray(data) && data.length > 0;
+}
+
 async function addDBBook(book) {
     const response = await fetch(SERVER + '/books' , {
         method: 'POST',

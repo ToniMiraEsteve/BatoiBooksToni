@@ -2,7 +2,7 @@ export default class vista {
     constructor(controller) {
         this.form = document.getElementById('form');
 
-        this.renderFortToAddBooks();
+        this.renderFormToAddBooks();
         
         this.booksList = document.getElementById('list');
         this.about = document.getElementById('about');
@@ -19,55 +19,32 @@ export default class vista {
 
     validateForm() {
         const form = document.getElementById("bookForm");
-        
         this.clearErrorMessages();
-
-        let isValid = true;
-
-        const moduleSelect = document.getElementById("id-module");
-        if (!moduleSelect.value) {
-            moduleSelect.setCustomValidity('El código del módulo es obligatorio.');
-            isValid = false;
-        } else {
-            moduleSelect.setCustomValidity('');
-        }
-
-        const publisher = document.getElementById("publisher");
-        if (!publisher.value.trim()) {
-            publisher.setCustomValidity('La editorial es obligatoria.');
-            isValid = false;
-        } else {
-            publisher.setCustomValidity('');
-        }
-
-        const price = document.getElementById("price");
-        if (!price.value || price.value < 0) {
-            price.setCustomValidity('El precio debe ser un número mayor o igual que 0.');
-            isValid = false;
-        } else {
-            price.setCustomValidity('');
-        }
-
-        const pages = document.getElementById("pages");
-        if (!pages.value || pages.value < 0) {
-            pages.setCustomValidity('Las páginas deben ser un número entero mayor o igual que 0.');
-            isValid = false;
-        } else {
-            pages.setCustomValidity('');
+    
+        if (!form.checkValidity()) {
+            this.showFieldErrorMessages(form);
+            return false; 
         }
 
         const status = document.querySelector("input[name='status']:checked");
         if (!status) {
-            const statusGroup = document.querySelector('.status-group');
-            statusGroup.setCustomValidity('Debe seleccionar un estado para el libro.');
-            isValid = false;
-        } else {
-            status.setCustomValidity('');
+            this.mostrarMensaje('Error: Debe seleccionar un estado para el libro.', 'error');
+            return false;
         }
-
-        return isValid;
+    
+        return true;
     }
-
+    
+    showFieldErrorMessages(form) {
+        const fields = form.querySelectorAll('input, select, textarea');
+        fields.forEach(field => {
+            if (!field.validity.valid) {
+                const message = field.validationMessage || 'Este campo no es válido';
+                this.showErrorMessage(field, message);
+            }
+        });
+    }
+    
 
     clearErrorMessages() {
         const errorDivs = this.form.querySelectorAll('.error-message');
@@ -75,11 +52,16 @@ export default class vista {
     }
 
     showErrorMessage(field, message) {
+        if (!field) {
+            console.error('Field is not defined');
+            return;
+        }
+    
         const errorDiv = document.createElement('div');
         errorDiv.classList.add('error-message');
         errorDiv.style.color = 'red';
         errorDiv.textContent = message;
-
+    
         const existingMessage = field.nextElementSibling;
         if (existingMessage && existingMessage.classList.contains('error-message')) {
             existingMessage.remove();
@@ -287,7 +269,7 @@ export default class vista {
         this.form.innerHTML = `
             <div class="form">
                 <h2>Editar libro</h2>
-                <form id="bookForm">
+                <form id="bookForm" novalidate>
                     <div>
                         <label for="id">ID del Libro:</label>
                         <input id="id" name="ID" value="${book.id}" readonly>

@@ -16,6 +16,15 @@ export default class books {
         }
     };
 
+    async bookExists(userId, moduleCode) {
+        try {
+            return await api_books.checkBookExistsInDB(userId, moduleCode);
+        } catch (error) {
+            console.error('Error al verificar si el libro existe:', error.message);
+            throw error;
+        }
+    }
+
     async addBook(book) {
         try {
             const addedBook = await api_books.addDBBook(book);
